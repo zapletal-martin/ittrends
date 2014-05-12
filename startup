@@ -1,0 +1,12 @@
+download Kafka
+
+
+create kafka topic 
+./kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic tweets
+
+check topic exists
+./kafka-topics.sh --list --zookeeper localhost:2181
+
+
+other useful commands 
+https://kafka.apache.org/documentation.html#producerapi
