@@ -10,12 +10,14 @@ trait TweetParser {
 
     val parent = parse(data)
 
-    for {
+    val JString(id) = parent \ "id_str"
 
-      JField("user", JString(user)) <- parent
+    val user = parent \ "user"
+    val JString(userId) = user \ "id_str"
+    val JString(name) = user \ "name"
+    val JString(screenName) = user \ "screen_name"
+    val JInt(followers) = user \ "followers_count"
 
-    } yield (user)
-
-    Tweet("", User("", "", "", 12), "", Some(Place("", "")), Set())
+    Tweet(id, User(userId, name, screenName, followers.toInt), "", Some(Place("", "")), Set())
   }
 }

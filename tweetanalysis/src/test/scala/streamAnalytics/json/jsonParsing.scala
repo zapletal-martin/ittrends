@@ -35,6 +35,14 @@ class jsonParsing extends Specification with TweetParser {
     "contain tweet id" in {
       tweet.id must beEqualTo("467968138488082432")
     }
+
+    "contain user with id, name, screen name and number of followers" in {
+      val user = tweet.user;
+      user.id must beEqualTo("239995975")
+      user.name must beEqualTo("cillo#32!\uf8ff")
+      user.screenName must beEqualTo("cillo70")
+      user.followersCount must beEqualTo(150)
+    }
   }
 
 }
