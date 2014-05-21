@@ -1,23 +1,30 @@
 package streamAnalytics.json
 
 import streamAnalytics.tweet.{Place, User, Tweet}
-import net.liftweb.json._
-import net.liftweb.json.DefaultFormats
+import play.api.libs.json._
 
 trait TweetParser {
   def getTweet(data: String): Tweet = {
-    implicit val formats = DefaultFormats
+    val json = Json.parse(data)
+    val user = json \ "user"
+    val mentions = json \ "user_mentions"
 
-    val parent = parse(data)
+    def extractUser(userJson: JsValue) = User(
+      (user \ "id_str").as[String],
+      (user \ "name").as[String],
+      (user \ "screen_name").as[String],
+      (user \ "followers_count").as[Int])
 
-    val JString(id) = parent \ "id_str"
+    def extractMentions(mentionsJson: JsValue) = mentionsJson match {
+      case JsArray(elements) => elements.map(extractUser).toSet
+      case _ => Set[User]()
+    }
 
-    val user = parent \ "user"
-    val JString(userId) = user \ "id_str"
-    val JString(name) = user \ "name"
-    val JString(screenName) = user \ "screen_name"
-    val JInt(followers) = user \ "followers_count"
-
-    Tweet(id, User(userId, name, screenName, followers.toInt), "", Some(Place("", "")), Set())
+    Tweet(
+      (json \ "id_str" ).as[String],
+      extractUser(user),
+      (json \ "text").as[String],
+      None,
+      extractMentions(mentions))
   }
 }

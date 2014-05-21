@@ -43,6 +43,13 @@ class jsonParsing extends Specification with TweetParser {
       user.screenName must beEqualTo("cillo70")
       user.followersCount must beEqualTo(150)
     }
-  }
 
+    "contain exactly two user mentions and they must have correct names" in {
+      val mentions = tweet.userMentions;
+
+      mentions.size must beEqualTo(2)
+      mentions.filter(_.name == "Fabio Ravezzani").size must beEqualTo(1)
+      mentions.filter(_.name == "Roberto Renga").size must beEqualTo(1)
+    }
+  }
 }
